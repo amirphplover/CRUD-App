@@ -5,7 +5,7 @@ class Dbh {
 
 	private $username = USER;
 	private $password = PASSWORD;
-	private $Dsn = "mysql:host=" .   . ";dbname=" . DBNAME;
+	private $Dsn = "mysql:host=" . SERVER . ";dbname=" . DBNAME;
 	public $conn;
 
 	public function __construct() {
@@ -31,9 +31,10 @@ class Dbh {
 
 	public function Insert($fname, $lname, $email, $phone) {
 
-		$sql = "INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `phone`) VALUES (NULL, :fname, :lname, :email, :phone)";
+		$sql = "INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `phone`) VALUES (NULL, ?, ?, ?, ?)";
 		$res = $this->conn->prepare($sql);
-		$res->execute(['fname' => $fname, 'lname' => $lname, 'email' => $email, 'phone' => $phone]);
+		return $res->execute([$fname, $lname, $email, $phone]);
+		return true;
 
 	}
 
@@ -42,20 +43,20 @@ class Dbh {
 		$sql = "SELECT * FROM users";
 		$res = $this->conn->prepare($sql);
 		$res->execute();
-		$res->fetchAll(PDO::FETCH_ASSOC);
-		foreach ($res as $row) {
+		$data = $res->fetchAll(PDO::FETCH_ASSOC);
+		// foreach ($data as $row) {
 
-			$data[] = $row;
-		}
+		// 	$data[] = $row;
+		// }
 		return $data;
 
 	}
 
 	public function getUserById($id) {
 
-		$sql = "SELECT * FROM users WHERE id = :id";
+		$sql = "SELECT * FROM users WHERE id = ?";
 		$res = $this->conn->prepare($sql);
-		$res->execute(['id' => $id]);
+		$res->execute([$id]);
 		$data = $res->fetch(PDO::FETCH_ASSOC);
 		return $data;
 	}
@@ -85,9 +86,5 @@ class Dbh {
 	}
 
 }
-
-$db = new Dbh;
-
-echo $db->TotalRowCount();
 
 ?>
