@@ -71,9 +71,10 @@ class Dbh {
 
 	public function Delete($id) {
 
-		$sql = "DELETE * FROM users WHERE id = :id";
+		$sql = "DELETE FROM `users` WHERE `users`.`id` = ?";
 		$res = $this->conn->prepare($sql);
-		$res->execute([':id' => $id]);
+		$res->execute([$id]);
+		return true;
 	}
 
 	public function TotalRowCount() {

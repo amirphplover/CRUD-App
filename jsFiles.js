@@ -16,7 +16,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
 
 <!-- sweet alert -->
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
@@ -67,11 +67,13 @@
           data: $("#form-data").serialize()+"&action=insert",
           success:function(response){
 
-            swal({
-                  title: "Good job",
-                  text: "user Added successfuly",
-                  icon: "success"
-                })
+          Swal.fire({
+            
+            icon: 'success',
+            title: 'User Added successfuly',
+            showConfirmButton: false,
+            timer: 1500
+          })
 
             $("#AddUserModal").modal('hide');
             $("#form-data")[0].reset();
@@ -125,11 +127,13 @@
           data: $("#edit-form-data").serialize()+"&action=update",
           success:function(response){
 
-            swal({
-                  title: "Good job",
-                  text: "user Update successfuly",
-                  icon: "success"
-                })
+          Swal.fire({
+            
+            icon: 'success',
+            title: 'User Updated successfuly',
+            showConfirmButton: false,
+            timer: 1500
+          })
 
             $("#EditUserModal").modal('hide');
             $("#edit-form-data")[0].reset();
@@ -140,6 +144,80 @@
 
         });
       }
+
+    });
+
+
+
+      $("body").on("click", ".delBtn", function(e){
+          e.preventDefault();
+          var tr = $(this).closest('tr');
+          del_id = $(this).attr('id');
+          
+
+          Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+          if (result.value){
+            $.ajax({
+                    url: "action.php",
+                    type: "POST",
+                    data: {del_id:del_id},
+                    success:function(response){
+
+                      tr.css('background-color','#ff666');
+                        Swal.fire({
+                          
+                          icon: 'success',
+                          title: 'Deleted',
+                          text: 'User Deleted successfuly',
+                          showConfirmButton: false,
+                          timer: 1500
+                        })
+
+                      showAllUser();
+                    }
+
+                  });
+                        }
+              });
+
+      });
+
+
+      //show user details
+
+      $("body").on("click", ".infoBtn", function(e){
+      e.preventDefault();
+      info_id = $(this).attr('id');
+      $.ajax({
+        url: "action.php",
+        type: "POST",
+        data: {info_id:info_id},
+        success:function(response){
+          // console.log(response);
+          res = JSON.parse(response);
+
+            Swal.fire({
+                          
+                          
+                title: '<strong>User info : ID('+res.id+')</strong>',
+                type: 'info',
+                html: '<b>First Name : </b>'+res.fname+'<br><b>Last Name : </b>'+res.lname+'<br><b>phone Number : </b>'+data.phone+
+                          '<br><b>Email : </b>'+res.email,
+                
+
+                         
+                        })
+
+        }
+      });
 
     });
 
